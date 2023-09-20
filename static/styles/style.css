@@ -1,0 +1,41 @@
+#textInput {
+    border-radius: 50px;
+    border: 1px solid black ;
+    padding: 20px;
+
+}
+#chatbox {
+    border: 1px solid black ;
+    -webkit-box-shadow: cadetblue;
+    border-radius: 10px;
+}
+#btnmic{
+     border-radius: 40px;
+}
+
+.userText {
+    color: white;
+    font-family: monospace;
+    font-size: 17px;
+    text-align: right;
+    line-height: 30px;
+}
+.userText span {
+    background-color: lightseagreen;
+    padding: 10px;
+    border-radius: 40px;
+     word-wrap: break-word;
+}
+.botText {
+    color: white;
+    font-family: monospace;
+    font-size: 17px;
+    text-align: left;
+    line-height: 30px;
+}
+.botText span {
+    background-color: darkgrey;
+    padding: 10px;
+    border-radius: 40px;
+     word-wrap: break-word;
+}

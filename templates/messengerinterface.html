@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Flask Chatbot Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <div id="chatbox"></div>
+    <div class="input-group">
+      <input id="message" type="text" placeholder="Type your message...">
+      <button id="send"><i class="fa fa-paper-plane"></i></button>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.min.js"></script>
+    <script>
+      var socket = io();
+      $('form').submit(function(event){
+        event.preventDefault();
+      });
+      $('#send').click(function(){
+        var message = $('#message').val();
+        socket.emit('message', message);
+        $('#chatbox').append('<p><strong>You:</strong> ' + message + '</p>');
+        $('#message').val('');
+      });
+      socket.on('response', function(data){
+        $('#chatbox').append('<p><strong>Bot:</strong> ' + data.message + '</p>');
+      });
+    </script>
+  </body>
+</html>

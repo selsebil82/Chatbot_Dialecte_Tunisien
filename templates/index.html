@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/styles/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/a9aa160619.js" crossorigin="anonymous"></script>
+    <title>Chatbot</title>
+</head>
+<body>
+    <h1 class="jumbotron text-center">شاتبوت باللهجة التونسية</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 offset-sm-3">
+            <div id="chatbox" class="border border-dark" style="padding: 10px">
+                <p class="botText"  style="display: flex;flex-direction:row;">
+                    <img src ="static/images/chatbot.jpg" width="60px" height="60px"/>
+                    <span id ="firstrespchatbot" style="display: block;">عسلامة صديقي، أنا روبوت نجم نجاوبك على أسئلتك المتعلقة بالستاج ولا بالخدمة</span>
+                    <button class="btn btn-light btnsound" onclick="playsound1()"><i class="fa fa-play" style="color: black"></i></button>
+                </p>
+                <br>
+            </div>
+             <br>
+             <div id="userInput">
+                 <div style="display: flex;flex-direction:row">
+                     <input id="textInput" class="form-control" type="text" name="msg" placeholder="إكتب شنوة تحب تقول هنا ...">
+                     <button id ="btnmic" class="btn btn-light" onclick="mic()"><i class="fa fa-microphone fa-lg"></i></button>
+                 </div>
+                 <br>
+                 <button id="buttonInput" style="border-radius: 50px;text-align: center" class="btn btn-dark form-control" type="submit">ابعث</button>
+                 <!--value="ابعث"-->
+             </div>
+        </div>
+
+    </div>
+    <br>
+    <div class="card-footer">
+        <p>Developed by :</p>
+        <ul>
+            <li>Maissa Abdelwahed</li>
+            <li>Selsebil Trabelsi</li>
+            <li>Fayrouz Hajjaji</li>
+        </ul>
+    </div>
+
+<script>
+    var indiceresponse = 0
+    var lastresponse = document.getElementById("firstrespchatbot").innerHTML;
+    console.log(lastresponse)
+      var tabbot = []
+    function getResponse() {
+        let userText = $("#textInput").val();
+
+        let userHtml = '<p class="userText"  style="display: flex;flex-direction:row;justify-content: flex-end"><span  style="display: block;">' + userText + '</span><img src ="static/images/img.png" width="40px" height="40px"/></p>';
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+        $.get("/get", { msg: userText }).done(function(data) {
+            indiceresponse = data[1]
+            console.log(data[1])
+            tabbot.push(data[0])
+            console.log(tabbot)
+            //lastresponse = data
+            var x = "bot"
+            var botHtml = '<p class="botText"  style="display: flex;flex-direction:row;"><img src ="static/images/chatbot.jpg" width="60px" height="60px"/><span id='+indiceresponse+x+' class="maissa" style="display: block;">' + data[0] + '</span><button class="btn btn-light" onclick="playsound(this.id)"  style="color: black" id='+indiceresponse+'><i class="fa fa-play"></i></button></p>';
+            let soundicon= '<button class="btn btn-light" onclick="playsound(this.id)"  style="color: black" id='+indiceresponse+'><i class="fa fa-play"></i></button>'
+            $("#chatbox").append(botHtml);
+           // $("#chatbox").append(soundicon);
+            document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+            var elem = document.querySelector(".maissa")
+            console.log(elem)
+           //document.querySelector(".maissa").attr("id", indiceresponse);
+            console.log(document.getElementById(indiceresponse+x).innerHTML)
+            console.log("indice from response functio :",indiceresponse)
+        });
+    }
+
+  function mic(){
+
+            var botHtml = '<p class="botText"  style="display: flex;flex-direction:row;"><img src ="static/images/chatbot.jpg" width="60px" height="60px"/><span  style="display: block;" >' + 'تكلم هاني نسمع فيك ...' + '</span></p>';
+            $("#chatbox").append(botHtml);
+            document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+             $.get("/mic").done(function(data) {
+                  $("#textInput").val(data);
+                  $("#chatbox").append(userHtml);
+                  document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+             });
+  }
+  function playsound (idclicked){
+        console.log(idclicked)
+        console.log("text of clicked button",tabbot[idclicked-1])
+        var inp =document.getElementById(indiceresponse).innerHTML
+       $.get("/playsound",{ text : tabbot[idclicked-1] }).done(function()
+      {
+          console.log("nothing here !!!")
+                  //$("#textInput").val(data);
+                 // $("#chatbox").append(userHtml);
+                 // document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+       });
+  }
+
+  function playsound1(){
+        var inp = 'عسلامة صديقي، أنا روبوت نجم نجاوبك على أسئلتك المتعلقة بالستاج ولا بالخدمة'
+       $.get("/playsound",{ text : inp }).done(function()
+       {
+          console.log("nothing here !!!")
+                  //$("#textInput").val(data);
+                 // $("#chatbox").append(userHtml);
+                 // document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+       });
+  }
+
+    $("#textInput").keypress(function(e) {
+    //if enter key is pressed
+        if(e.which === 13) {
+            getResponse();
+        }
+    });
+    $("#buttonInput").click(function() {
+        getResponse();
+    });
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</div>
+</body>
+</html>
